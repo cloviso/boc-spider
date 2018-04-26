@@ -2,6 +2,7 @@ var request = require('request'),
     cheerio = require('cheerio'),
     fs = require("fs"),
     browserSync = require("browser-sync").create();
+    schedule = require("node-schedule");
 
 var arryData = [],
       pageNum = 1,
@@ -23,6 +24,7 @@ function reqCallback(err, response, body) {
             arryTmp.push(Number($child.eq(1).text())) // 现汇买入
             arryTmp.push(Number($child.eq(2).text())) // 现钞买入
             arryTmp.push(Number($child.eq(3).text())) // 现汇卖出
+            arryTmp.push(Number($child.eq(4).text())) // 现钞卖出
             arryTmp.push($child.eq(7).text()) // 发布时间
 
             arryData.push(arryTmp)
@@ -42,7 +44,7 @@ function fetchInfo() {
             url: 'http://srh.bankofchina.com/search/whpj/search.jsp',
             method: 'POST',
             form: {
-                pjname: 1326,
+                pjname: 1316,
                 page: pageNum++
             }
         }, reqCallback)
@@ -53,13 +55,20 @@ function fetchInfo() {
             console.log('数据保存成功');
         })
         // 前台展示数据
-        browserSync.init({
-            server: "./app",
-            browser: "google chrome"
-        });
+        // browserSync.init({
+        //     server: "./app",
+        //     browser: "google chrome"
+        // });
         return
     }
 }
 
 console.log('开始抓取数据...');
 fetchInfo();
+    // 定时执行抓取任务（5min 刷一次页面数据）
+    var rule    = new schedule.RecurrenceRule();
+    var times    = [1,6,11,16,21,26,31,36,41,46,51,56];
+    rule.minute  = times;
+    schedule.scheduleJob(rule, function(){
+    fetchInfo();
+    });
