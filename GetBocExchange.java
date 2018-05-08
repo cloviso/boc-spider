@@ -2,7 +2,7 @@
  * Project Name:ctrm-bat
  * File Name:GetPurchaseSpotJob.java
  * Package Name:com.maikegroup.delight.ctrm.bat.transTask
- * Copyright (c) 2018, 上海迪亮信息科技有限公司.
+ * Copyright (c) 2018, ****.
  *
  */
 package com.maikegroup.delight.data.consumer;
